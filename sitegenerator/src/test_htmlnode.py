@@ -523,6 +523,52 @@ This is a paragraph with **bold** and _italic_.
             "<div><h1>Heading</h1><p>This is a paragraph with <b>bold</b> and <i>italic</i>.</p><ul><li>list item one</li><li>list item two</li></ul><blockquote>a quote line another quote line</blockquote><ol><li>first</li><li>second</li></ol></div>"
         )
 
+    def test_extract_title(self):
+        md = "# Hello"
+        title = functions.extract_title(md)
+        self.assertEqual(
+            title,
+            "Hello"
+        )
+    
+    def test_extract_title_double_titles(self):
+        md = """
+# Hello
+
+# Hello too
+        """
+        title = functions.extract_title(md)
+        self.assertEqual(
+            title,
+            "Hello"
+        )
+
+    def test_extract_title_skip_title(self):
+        md = """
+## Hello
+
+# Hello too
+        """
+        title = functions.extract_title(md)
+        self.assertEqual(
+            title,
+            "Hello too"
+        )
+
+
+    def test_extract_title_incorrect(self):
+        md = "## Hello"
+        with self.assertRaisesRegex(Exception,"No h1 header"):
+            functions.extract_title(md)
+    
+    def test_extract_title_whitespace(self):
+        md = "   #    Hello    "
+        title = functions.extract_title(md)
+        self.assertEqual(
+            title,
+            "Hello"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

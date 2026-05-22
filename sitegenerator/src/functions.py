@@ -1,6 +1,8 @@
 from textnode import TextNode, TextType
 from htmlnode import LeafNode, ParentNode
 from blocktype import BlockType
+import os
+import shutil
 import re
 
 def text_node_to_html_node(text_node):
@@ -164,3 +166,42 @@ def text_to_children(text):
     for node in text_nodes:
         html_nodes.append(text_node_to_html_node(node))
     return html_nodes
+
+def copy_contents(src, dest):
+    if os.path.exists(dest):
+        shutil.rmtree(dest)
+    os.mkdir(dest)
+    copy(src, dest)
+
+def copy(src, dest):
+    for file in os.listdir(src):
+        file_path = os.path.join(src, file)
+        target_path = os.path.join(dest, file)
+        print(f"Copying {file_path} to {target_path}")
+        if not os.path.isfile(file_path):
+            os.mkdir(target_path)
+            copy(file_path, target_path)
+        else:
+            shutil.copy(file_path, target_path)
+
+def extract_title(markdown):
+    blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        cleaned = block.strip()
+        if cleaned.startswith("# "):
+            return cleaned.split("\n")[0].removeprefix("#").strip()
+    raise Exception("No h1 header")
+
+def generate_page(from_path, template_path, dest_path):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+    with open(from_path) as f:
+        markdown = f.read()
+    with open(template_path) as g:
+        template = g.read()
+    html = markdown_to_html_node(markdown).to_html()
+    title = extract_title(markdown)
+    template = template.replace("{{ Title }}", title)
+    template = template.replace("{{ Content }}", html)
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    with open(dest_path, "w") as h:
+        h.write(template)

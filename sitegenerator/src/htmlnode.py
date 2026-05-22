@@ -35,26 +35,11 @@ class LeafNode(HTMLNode):
             return self.value
         else:
             if self.tag == "a":
-                return f"<a {self.props_to_html()}>{self.value}</a>"
+                return f"<a{self.props_to_html()}>{self.value}</a>"
             elif self.tag=="img":
                 return f'<img{self.props_to_html()} />'
             else:
                 return f"<{self.tag}>{self.value}</{self.tag}>"
-    
-    def text_node_to_html_node(text_node):
-        match text_node.text_type:
-            case TextType.TEXT:
-                return LeafNode(None, text_node.text)
-            case TextType.BOLD:
-                return LeafNode("b", text_node.text)
-            case TextType.ITALIC:
-                return LeafNode("i", text_node.text)
-            case TextType.CODE:
-                return LeafNode("code", text_node.text)
-            case TextType.LINK:
-                return LeafNode("a", text_node.text, {"href":text_node.url})
-            case TextType.IMAGE:
-                return LeafNode("img", "", {"src":text_node.url, "alt":text_node.text})
 
     
     def __repr__(self):
