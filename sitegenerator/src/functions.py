@@ -210,6 +210,7 @@ def generate_page(from_path, template_path, dest_path, basepath):
         h.write(template)
     
 def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
+    print(f"recursive got basepath = {basepath}")
     for file in os.listdir(dir_path_content):
         file_path = os.path.join(dir_path_content, file)
         target_path = os.path.join(dest_dir_path, file)
