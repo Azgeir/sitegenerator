@@ -1,6 +1,7 @@
 from textnode import TextNode, TextType
 from htmlnode import LeafNode, ParentNode
 from blocktype import BlockType
+from pathlib import Path
 import os
 import shutil
 import re
@@ -205,3 +206,13 @@ def generate_page(from_path, template_path, dest_path):
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, "w") as h:
         h.write(template)
+    
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    for file in os.listdir(dir_path_content):
+        file_path = os.path.join(dir_path_content, file)
+        target_path = os.path.join(dest_dir_path, file)
+        if not os.path.isfile(file_path):
+            generate_pages_recursive(file_path, template_path, target_path)
+        else:
+            generate_page(file_path, template_path, Path(target_path).with_suffix(".html"))
+        
