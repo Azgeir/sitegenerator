@@ -1,8 +1,13 @@
 import functions
+import sys
 
 def main():
-    functions.copy_contents("static", "public")
-    functions.generate_pages_recursive("content", "template.html", "public")
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+    else:
+        basepath = "/"
+    functions.copy_contents("static", "docs")
+    functions.generate_pages_recursive("content", "template.html", "docs", basepath)
 
 
 main()
